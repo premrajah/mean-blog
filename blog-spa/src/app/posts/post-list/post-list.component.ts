@@ -22,7 +22,7 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.postsSubscription =  this.postService.getPostUpdateListner()
       .subscribe((posts: Post[]) => {
         this.posts = posts;
-      }); // three arguments new data added|error|completed
+      }); // three arguments next()|error()|completed()
   }
 
   ngOnDestroy() {
