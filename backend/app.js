@@ -39,11 +39,21 @@ app.post("/api/posts", (req, res, next) => {
     content: req.body.content
   });
 
-  post.save(); // save to db
+  // save to db
+  post.save()
+  .then(createdPost => {
+    console.log(createdPost);
 
-  res.status(201).json({
-    message: "Post added successfully!"
-  }); // send a resonse with 201 everything ok new resource created
+    // send a resonse with 201 everything ok new resource created
+    res.status(201).json({
+      message: "Post added successfully!",
+      postId: createdPost._id
+    });
+  })
+  .catch(error => {
+    console.log("Post request " + error);
+  });
+
 });
 
 
@@ -57,24 +67,24 @@ app.get('/api/posts', (req, res, next) => {
         message: 'Post fetched succesfully!',
         posts: documents
       });
-
+    })
+    .catch(error => {
+      console.log("GET request " + error);
     });
-
 });
 
 app.delete('/api/posts/:id', (req, res, next) => {
 
-  Post.deleteOne({
-      _id: req.params.id
-    })
+  Post.deleteOne({ _id: req.params.id })
     .then(result => {
       console.log(result);
 
       //send response
-      res.status(200).json({
-        message: "Deleted post " + req.params.id + " successfully!"
-      });
+      res.status(200).json({ message: "Deleted successfully!" });
     })
+    .catch((error) => {
+      console.log("delete request ", error);
+    });
 
 });
 
