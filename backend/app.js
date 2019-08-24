@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const Post = require('./models/post'); // Post model (mongoose/mongodb)
+
 const app = express();
 
 app.use(bodyParser.json()); // middleware to parse the reqest body
@@ -11,10 +13,7 @@ app.use(bodyParser.urlencoded({
 // headers / CORS
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); // Key|Value (access for all domains)
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, COntent-Type, Accept'
-  );
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
   next(); // call next middle ware
 });
@@ -23,7 +22,10 @@ app.use((req, res, next) => {
 /* POST Request for posts
 ------------------------------------------------  */
 app.post("/api/posts", (req, res, next) => {
-  const post = req.body;
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content
+  });
   console.log(post);
 
   res.status(201).json({
