@@ -8,7 +8,7 @@
       <button class="edit-button" mat-stroked-button color="primary">
         EDIT
       </button>
-      <button class="delete-button" mat-stroked-button color="warn">
+      <button class="delete-button" (click)="onDelete(post.id)" mat-stroked-button color="warn">
         DELETE
       </button>
     </mat-action-row>
