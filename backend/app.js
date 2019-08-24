@@ -4,8 +4,12 @@ const app = express();
 
 // headers / CORS
 app.use((req, res, next) => {
-
-
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Key|Value (access for all domains)
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, COntent-Type, Accept'
+  );
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
   next(); // call next middle ware
 });
 
