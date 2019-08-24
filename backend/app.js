@@ -1,9 +1,19 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 const Post = require('./models/post'); // Post model (mongoose/mongodb)
 
 const app = express();
+
+mongoose.connect('mongodb+srv://zinox:i1851WDzb5VYHGdw@cluster0-4sixw.mongodb.net/test?retryWrites=true&w=majority')
+  .then(() => {
+    console.log("Connected to database");
+  })
+  .catch((error) => {
+    console.log("Connection failed!");
+    console.log(error);
+  });
 
 app.use(bodyParser.json()); // middleware to parse the reqest body
 app.use(bodyParser.urlencoded({
