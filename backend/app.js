@@ -2,6 +2,13 @@ const express = require('express');
 
 const app = express();
 
+// headers / CORS
+app.use((req, res, next) => {
+
+
+  next(); // call next middle ware
+});
+
 app.use('/api/posts', (req, res, next) => {
 
   const posts = [{
