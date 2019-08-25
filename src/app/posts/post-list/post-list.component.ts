@@ -10,6 +10,7 @@ import { PostService } from '../post.service';
 })
 export class PostListComponent implements OnInit, OnDestroy {
   //
+  spinnerIsLoading = false;
   posts: Post[] = [];
   private postsSubscription: Subscription;
 
@@ -18,9 +19,12 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.spinnerIsLoading = true; // show spinner
+
     this.postService.getPosts();
     this.postsSubscription =  this.postService.getPostUpdateListner()
       .subscribe((posts: Post[]) => {
+        this.spinnerIsLoading = false;
         this.posts = posts;
       }); // three arguments next()|error()|completed()
   }

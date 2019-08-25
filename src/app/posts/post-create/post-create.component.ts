@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { PostService } from '../post.service';
 import { Post } from '../post.model';
@@ -13,20 +13,29 @@ export class PostCreateComponent implements OnInit {
   enteredTitle = '';
   enteredContent = '';
 
+  spinnerIsLoading = false;
+
   private mode = 'create';
   private postId: string;
   post: Post;
 
-  constructor(public postService: PostService, public route: ActivatedRoute, public router: Router) {}
+  constructor(public postService: PostService, public route: ActivatedRoute) {}
 
   ngOnInit() {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('postId')) {
         this.mode = 'edit';
         this.postId = paramMap.get('postId');
-        this.postService.getPost(this.postId)
-        .subscribe(postData => {
-          this.post = { id: postData._id, title: postData.title, content: postData.content }
+        // show spinner
+        this.spinnerIsLoading = true;
+        this.postService.getPost(this.postId).subscribe(postData => {
+          // hide spinner
+          this.spinnerIsLoading = false;
+          this.post = {
+            id: postData._id,
+            title: postData.title,
+            content: postData.content
+          };
         });
       } else {
         this.mode = 'create';
@@ -40,18 +49,17 @@ export class PostCreateComponent implements OnInit {
     if (form.invalid) {
       return;
     }
+    // show spinner
+    this.spinnerIsLoading = true;
 
     if (this.mode === 'create') {
       this.postService.addPost(form.value.title, form.value.content);
-      this.router.navigateByUrl('/'); // navigate to home
     } else {
       this.postService.updatePost(
         this.postId,
         form.value.title,
         form.value.content
       );
-      // navigate to home
-      this.router.navigateByUrl('/');
     }
 
     form.resetForm(); // reset form to default

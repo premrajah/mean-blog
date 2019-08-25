@@ -9,3 +9,7 @@
 .edit-button {
   margin-right: 1rem;
 }
+
+mat-spinner {
+  margin: auto;
+}
