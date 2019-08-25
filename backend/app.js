@@ -6,12 +6,15 @@ const postRoutes = require('./routes/posts');
 
 const app = express();
 
-mongoose.connect('mongodb://localhost/mean-blog', {
+//// Local server
+// mongoose.connect('mongodb://localhost/mean-blog', {
+//     useNewUrlParser: true
+//   })
+
+//// Cloud server
+mongoose.connect('mongodb+srv://zinox:i1851WDzb5VYHGdw@cluster0-4sixw.mongodb.net/mean-blog?retryWrites=true&w=majority', {
     useNewUrlParser: true
   })
-  // mongoose.connect('mongodb+srv://zinox:i1851WDzb5VYHGdw@cluster0-4sixw.mongodb.net/mean-blog?retryWrites=true&w=majority', {
-  //     useNewUrlParser: true
-  //   })
   .then(() => {
     console.log("Connected to database");
   })
