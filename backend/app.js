@@ -59,7 +59,7 @@ app.post("/api/posts", (req, res, next) => {
 
 });
 
-
+// PUT
 app.put("/api/posts/:id", (req, res, next) => {
 
   const post = new Post({
@@ -71,8 +71,7 @@ app.put("/api/posts/:id", (req, res, next) => {
   Post.updateOne({
       _id: req.params.id
     }, post)
-    .then(result => {
-      console.log("update one: " + result);
+    .then(() => {
       res.status(200).json({
         message: "Updated successfully! " + req.params.id
       })
@@ -96,8 +95,24 @@ app.get('/api/posts', (req, res, next) => {
     });
 });
 
-app.delete('/api/posts/:id', (req, res, next) => {
 
+// GET Single Post
+app.get('/api/posts/:id', (req, res, next) => {
+  Post.findById(req.params.id)
+  .then(post => {
+    if(post) {
+      res.status(200).json(post)
+    } else {
+      res.status(404).json({
+        message: "Post not found!"
+      });
+    }
+  })
+});
+
+
+// DELETE
+app.delete('/api/posts/:id', (req, res, next) => {
   Post.deleteOne({
       _id: req.params.id
     })

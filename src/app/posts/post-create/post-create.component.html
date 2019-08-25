@@ -6,7 +6,7 @@
         type="text"
         placeholder="Title"
         name="title"
-        [ngModel]="post.title"
+        [ngModel]="post?.title"
         #title="ngModel"
         required
         minlength="3"
@@ -20,7 +20,7 @@
         placeholder="Post Message"
         name="content"
         #content="ngModel"
-        [ngModel]="post.content"
+        [ngModel]="post?.content"
         required
       >
       </textarea>
@@ -32,7 +32,7 @@
       color="primary"
       type="submit"
     >
-      Add Post
+      Save Post
     </button>
   </form>
 </mat-card>
