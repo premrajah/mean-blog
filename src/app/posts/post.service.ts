@@ -34,7 +34,7 @@ export class PostService {
 
   // get single post
   getPost(id: string) {
-    return {...this.posts.find(p => p.id === id)}; // clone
+    return { ...this.posts.find(p => p.id === id) }; // clone
   }
 
   // for Subject/rxjs
@@ -45,9 +45,11 @@ export class PostService {
   addPost(title: string, content: string) {
     const post: Post = { id: null, title: title, content: content };
     this.http
-      .post<{ message: string, postId: string }>('http://localhost:3000/api/posts', post)
+      .post<{ message: string; postId: string }>(
+        'http://localhost:3000/api/posts',
+        post
+      )
       .subscribe(responseData => {
-
         // recieve response
         const id = responseData.postId;
         post.id = id; // overwrite with response id
@@ -67,5 +69,14 @@ export class PostService {
         this.posts = updatedPost;
         this.postsUpdated.next([...this.posts]);
       });
+  }
+
+  // update posts
+  updatePost(id: string, title: string, content: string) {
+    const post: Post = { id: id, title: title, content: content };
+    this.http.put('http://localhost:3000/api/posts/' + id, post)
+    .subscribe(response => {
+      console.log(response);
+    });
   }
 }
