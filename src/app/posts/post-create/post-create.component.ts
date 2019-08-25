@@ -43,6 +43,7 @@ export class PostCreateComponent implements OnInit {
 
     if (this.mode === 'create') {
       this.postService.addPost(form.value.title, form.value.content);
+      this.router.navigateByUrl('/'); // navigate to home
     } else {
       this.postService.updatePost(
         this.postId,
