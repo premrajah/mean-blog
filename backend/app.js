@@ -6,15 +6,18 @@ const Post = require('./models/post'); // Post model (mongoose/mongodb)
 
 const app = express();
 
-mongoose.connect('mongodb+srv://zinox:i1851WDzb5VYHGdw@cluster0-4sixw.mongodb.net/mean-blog?retryWrites=true&w=majority', {
+mongoose.connect('mongodb://localhost/mean-blog', {
     useNewUrlParser: true
   })
+// mongoose.connect('mongodb+srv://zinox:i1851WDzb5VYHGdw@cluster0-4sixw.mongodb.net/mean-blog?retryWrites=true&w=majority', {
+//     useNewUrlParser: true
+//   })
   .then(() => {
     console.log("Connected to database");
   })
   .catch((error) => {
     console.log("Connection failed!");
-    console.log(error);
+    console.log("Db Connection error" + error);
   });
 
 app.use(bodyParser.json()); // middleware to parse the reqest body
