@@ -32,6 +32,11 @@ export class PostService {
       });
   }
 
+  // get single post
+  getPost(id: string) {
+    return {...this.posts.find(p => p.id === id)}; // clone
+  }
+
   // for Subject/rxjs
   getPostUpdateListner() {
     return this.postsUpdated.asObservable();
