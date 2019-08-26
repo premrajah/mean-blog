@@ -33,9 +33,13 @@ const storage = multer.diskStorage({
 /* POST Request for posts
 ------------------------------------------------  */
 router.post("", multer({storage: storage}).single("image"), (req, res, next) => {
+
+  const url = req.protocol + '://' + req.get('host');  // current host
+
   const post = new Post({
     title: req.body.title,
-    content: req.body.content
+    content: req.body.content,
+    imagePath: url + '/images/' + req.file.filename
   });
 
   // save to db
@@ -46,7 +50,13 @@ router.post("", multer({storage: storage}).single("image"), (req, res, next) => 
       // send a resonse with 201 everything ok new resource created
       res.status(201).json({
         message: "Post added successfully!",
-        postId: createdPost._id
+        post: {
+          id: createdPost._id,
+          ...createdPost
+          // title: createdPost.title,
+          // content: createdPost.content,
+          // imagePath: createdPost.imagePath
+        }
       });
     })
     .catch(error => {
