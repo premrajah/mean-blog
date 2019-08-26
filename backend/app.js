@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -27,6 +28,9 @@ app.use(bodyParser.json()); // middleware to parse the reqest body
 app.use(bodyParser.urlencoded({
   extended: false
 })); // to only support default features
+
+// expost image path
+app.use('/images', express.static(path.join("backend/images")));
 
 // headers / CORS
 app.use((req, res, next) => {
