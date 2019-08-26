@@ -16,6 +16,7 @@ export class PostCreateComponent implements OnInit {
   spinnerIsLoading = false;
 
   form: FormGroup;
+  imagePreview = '';
 
   private mode = 'create';
   private postId: string;
@@ -88,6 +89,13 @@ export class PostCreateComponent implements OnInit {
 
     // imform the form that the validaty is changed
     this.form.get('image').updateValueAndValidity();
+
+    // convert image to data url
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = (reader.result as string);
+    };
+    reader.readAsDataURL(file);
 
     console.log(file);
     console.log(this.form);
