@@ -35,7 +35,9 @@ export class PostService {
 
   // get single post
   getPost(id: string) {
-    return this.http.get<{_id: string, title: string, content: string}>('http://localhost:3000/api/posts/' + id);
+    return this.http.get<{ _id: string; title: string; content: string }>(
+      'http://localhost:3000/api/posts/' + id
+    );
   }
 
   // for Subject/rxjs
@@ -43,17 +45,23 @@ export class PostService {
     return this.postsUpdated.asObservable();
   }
 
-  addPost(title: string, content: string) {
-    const post: Post = { id: null, title: title, content: content };
+  addPost(title: string, content: string, image: File) {
+    // to send form data rather than json
+    const postData = new FormData();
+    postData.append('title', title);
+    postData.append('content', content);
+    postData.append('image', image, title); // title for file name
+
     this.http
       .post<{ message: string; postId: string }>(
         'http://localhost:3000/api/posts',
-        post
+        postData
       )
       .subscribe(responseData => {
-        // recieve response
-        const id = responseData.postId;
-        post.id = id; // overwrite with response id
+
+        const post: Post = {
+          id: responseData.postId, title: title, content: content
+        }
 
         // optimesting updating
         this.posts.push(post);
@@ -76,19 +84,19 @@ export class PostService {
   // update posts
   updatePost(id: string, title: string, content: string) {
     const post: Post = { id: id, title: title, content: content };
-    this.http.put('http://localhost:3000/api/posts/' + id, post)
-    .subscribe(response => {
-      console.log(response);
-      const updatedPost = [...this.posts]; // clone
-      const oldPostIndex = updatedPost.findIndex((p => p.id === post.id));
+    this.http
+      .put('http://localhost:3000/api/posts/' + id, post)
+      .subscribe(response => {
+        console.log(response);
+        const updatedPost = [...this.posts]; // clone
+        const oldPostIndex = updatedPost.findIndex(p => p.id === post.id);
 
-      updatedPost[oldPostIndex] = post;
-      this.posts = updatedPost;
+        updatedPost[oldPostIndex] = post;
+        this.posts = updatedPost;
 
-      // update
-      this.postsUpdated.next([...this.posts]);
-      this.router.navigate(['/']); // navigate home
-
-    });
+        // update
+        this.postsUpdated.next([...this.posts]);
+        this.router.navigate(['/']); // navigate home
+      });
   }
 }
