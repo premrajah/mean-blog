@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { NgForm } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PostService } from '../post.service';
 import { Post } from '../post.model';
 
@@ -15,6 +15,8 @@ export class PostCreateComponent implements OnInit {
 
   spinnerIsLoading = false;
 
+  form: FormGroup;
+
   private mode = 'create';
   private postId: string;
   post: Post;
@@ -22,6 +24,13 @@ export class PostCreateComponent implements OnInit {
   constructor(public postService: PostService, public route: ActivatedRoute) {}
 
   ngOnInit() {
+    this.form = new FormGroup({
+      title: new FormControl(null, {
+        validators: [Validators.required, Validators.minLength(3)]
+      }),
+      content: new FormControl(null, { validators: [Validators.required] })
+    });
+
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('postId')) {
         this.mode = 'edit';
@@ -36,6 +45,11 @@ export class PostCreateComponent implements OnInit {
             title: postData.title,
             content: postData.content
           };
+
+          this.form.setValue({
+            title: this.post.title,
+            content: this.post.content
+          });
         });
       } else {
         this.mode = 'create';
@@ -44,24 +58,24 @@ export class PostCreateComponent implements OnInit {
     });
   }
 
-  onSavePost(form: NgForm) {
+  onSavePost() {
     // check form validity
-    if (form.invalid) {
+    if (this.form.invalid) {
       return;
     }
     // show spinner
     this.spinnerIsLoading = true;
 
     if (this.mode === 'create') {
-      this.postService.addPost(form.value.title, form.value.content);
+      this.postService.addPost(this.form.value.title, this.form.value.content);
     } else {
       this.postService.updatePost(
         this.postId,
-        form.value.title,
-        form.value.content
+        this.form.value.title,
+        this.form.value.content
       );
     }
 
-    form.resetForm(); // reset form to default
+    this.form.reset(); // reset form to default
   }
 }

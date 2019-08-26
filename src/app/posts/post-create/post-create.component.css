@@ -14,3 +14,7 @@ mat-spinner {
 input[type="file"] {
   visibility: hidden;
 }
+
+.text-field-form {
+  margin-top: 1rem;
+}
