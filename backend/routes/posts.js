@@ -16,11 +16,11 @@ const storage = multer.diskStorage({
     // error checking
     const isValid = MIME_TYPE_MAP[file.mimetype];
     let error = new Error("Invalid mime type");
-    if(isValid){
+    if (isValid) {
       error = null;
     }
 
-    cb(error, "backend/images");  // path relative to serve.js
+    cb(error, "backend/images"); // path relative to serve.js
   },
   filename: (req, file, cb) => {
     const name = file.originalname.toLowerCase().split(' ').join('_');
@@ -32,9 +32,11 @@ const storage = multer.diskStorage({
 
 /* POST Request for posts
 ------------------------------------------------  */
-router.post("", multer({storage: storage}).single("image"), (req, res, next) => {
+router.post("", multer({
+  storage: storage
+}).single("image"), (req, res, next) => {
 
-  const url = req.protocol + '://' + req.get('host');  // current host
+  const url = req.protocol + '://' + req.get('host'); // current host
 
   const post = new Post({
     title: req.body.title,
@@ -63,12 +65,14 @@ router.post("", multer({storage: storage}).single("image"), (req, res, next) => 
 });
 
 // PUT
-router.put("/:id", multer({storage: storage}).single("image"), (req, res, next) => {
+router.put("/:id", multer({
+  storage: storage
+}).single("image"), (req, res, next) => {
 
   let imagePath = req.body.imagePath;
 
-  if(req.file) {
-    const url = req.protocol + '://' + req.get('host');  // current host
+  if (req.file) {
+    const url = req.protocol + '://' + req.get('host'); // current host
     imagePath = url + '/images/' + req.file.filename;
   }
 
@@ -101,17 +105,27 @@ router.get('', (req, res, next) => {
   const currentPage = +req.query.page;
   const postQuery = Post.find();
 
-  if(pageSize && currentPage) {
+  let fetchedPost;
+
+  if (pageSize && currentPage) {
     postQuery
-    .skip(pageSize * (currentPage - 1))
-    .limit(pageSize);
+      .skip(pageSize * (currentPage - 1))
+      .limit(pageSize);
   }
 
   postQuery.find()
     .then(documents => {
+
+      fetchedPost = documents;
+
+      // for pagination
+      return Post.count();
+    })
+    .then(count => {
       res.status(200).json({
         message: 'Post fetched succesfully!',
-        posts: documents
+        posts: fetchedPost,
+        maxPosts: count
       });
     })
     .catch(error => {

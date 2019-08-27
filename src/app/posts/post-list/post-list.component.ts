@@ -16,31 +16,37 @@ export class PostListComponent implements OnInit, OnDestroy {
   private postsSubscription: Subscription;
 
   // for paginator
-  totlePosts = 10;
+  totlePosts = 0;
   postsPerPage = 2;
   currentPage = 1;
   pageSizeOptions = [1, 2, 5, 10];
 
-
-  constructor(public postService: PostService) {
-  }
+  constructor(public postService: PostService) {}
 
   ngOnInit() {
     this.spinnerIsLoading = true; // show spinner
 
     this.postService.getPosts(this.postsPerPage, this.currentPage);
-    this.postsSubscription =  this.postService.getPostUpdateListner()
-      .subscribe((posts: Post[]) => {
+    this.postsSubscription = this.postService
+      .getPostUpdateListner()
+      .subscribe((postData: { posts: Post[]; postCount: number }) => {
         this.spinnerIsLoading = false;
-        this.posts = posts;
+        this.totlePosts = postData.postCount;
+        this.posts = postData.posts;
       }); // three arguments next()|error()|completed()
   }
 
   onDelete(postId: string) {
-    this.postService.deletePost(postId);
+    this.spinnerIsLoading = true;
+    this.postService.deletePost(postId)
+      .subscribe(() => {
+        this.postService.getPosts(this.postsPerPage, this.currentPage);
+      });
   }
 
   onChangePage(pageData: PageEvent) {
+    this.spinnerIsLoading = true;
+
     this.currentPage = pageData.pageIndex + 1;
     this.postsPerPage = pageData.pageSize;
 
