@@ -1,8 +1,13 @@
 mat-form-field,
 textarea {
   width: 100%;
+  margin-top: 1rem;
 }
 
 mat-spinner {
   margin: auto;
+}
+
+.login-button {
+  margin-top: 1rem;
 }
