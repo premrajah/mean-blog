@@ -42,47 +42,52 @@ router.post("/signup", (req, res, next) => {
 
 
 router.post('/login', (req, res, next) => {
-      // chekc the email in the db against the request
-      User.findOne({
-          email: req.body.email
-        })
-        .then(user => {
-          if (!user) {
-            return res.status(401).json({
-              message: 'Auth falied'
-            });
-          }
-
-          // found user compare the hash with password
-          return bcrypt.compare(req.body.password, user.password);
-        })
-        .then(result => {
-          if (!result) {
-            return res.status(401).json({
-                message: 'Auth failed'
-              });
-            }
-
-              // valid password
-              const token = jwt.sign({email: user.email, userId: user._id}, 'secret_this_should_be_longer_than_this_but_i_guess_its_fine', {
-                expiresIn: '1h',
-              });
-
-              res.status(200).json({
-                message: 'Retrived user',
-                token: token
-              })
-            })
-          .catch(err => {
-            return res.status(401).json({
-              message: 'Auth failed',
-              error: err
-            });
-          });
-
+  let fetchedUser;
+  // check the email in the db against the request
+  User.findOne({
+      email: req.body.email
+    })
+    .then(user => {
+      if (!user) {
+        return res.status(401).json({
+          message: 'Auth falied'
         });
+      }
+
+      fetchedUser = user;
+
+      // found user compare the hash with password
+      return bcrypt.compare(req.body.password, fetchedUser.password);
+    })
+    .then(result => {
+      if (!result) {
+        return res.status(401).json({
+          message: 'Auth failed'
+        });
+      }
+
+      // valid password
+      const token = jwt.sign({
+        email: fetchedUser.email,
+        userId: fetchedUser._id
+      }, 'secret_this_should_be_longer_than_this_but_i_guess_its_fine', {
+        expiresIn: '1h',
+      });
+      res.status(200).json({
+        message: 'Retrived user',
+        token: token
+      })
+    })
+    .catch(err => {
+      return res.status(401).json({
+        message: 'Auth failed',
+        error: err
+      });
+    });
+
+});
 
 
 
 
-      module.exports = router;
+module.exports = router;
