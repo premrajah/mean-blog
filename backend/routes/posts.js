@@ -119,7 +119,7 @@ router.get('', (req, res, next) => {
       fetchedPost = documents;
 
       // for pagination
-      return Post.count();
+      return Post.countDocuments();
     })
     .then(count => {
       res.status(200).json({
