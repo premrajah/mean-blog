@@ -44,7 +44,7 @@ app.use((req, res, next) => {
 
 // Import and use routes
 app.use('/api/posts', postRoutes);
-app.use('api/user', userRoutes);
+app.use('/api/user', userRoutes);
 
 
 module.exports = app;
