@@ -9,6 +9,8 @@ export class AuthService {
 
   apiPath = 'http://localhost:3000/api/';
 
+  private token = '';
+
   constructor(private http: HttpClient) {}
 
   createUser(email: string, password: string) {
@@ -31,9 +33,16 @@ export class AuthService {
       password: password
     };
 
-    this.http.post((this.apiPath + 'user/login'), authData)
+    this.http.post<{token: string}>((this.apiPath + 'user/login'), authData)
     .subscribe(response => {
-      console.log(response);
+      const token = response.token;
+      this.token = token;
     });
   }
+
+
+  getToken() {
+    return this.token;
+  }
+
 }

@@ -36,7 +36,7 @@ app.use('/images', express.static(path.join("backend/images")));
 // headers / CORS
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); // Key|Value (access for all domains)
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
   next(); // call next middle ware
 });
