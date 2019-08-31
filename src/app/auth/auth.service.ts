@@ -60,4 +60,14 @@ export class AuthService {
         }
       });
   }
+
+  logout() {
+    // clear token
+    this.token = null;
+    this.isAuthenticated = false;
+
+    // send to other components listening
+    // un-authenticate user
+    this.authStatusListener.next(false);
+  }
 }
