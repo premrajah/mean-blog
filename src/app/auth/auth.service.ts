@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthData } from './auth-data.model';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +11,18 @@ export class AuthService {
   apiPath = 'http://localhost:3000/api/';
 
   private token = '';
+  private authStatusListener = new Subject<boolean>();
 
   constructor(private http: HttpClient) {}
+
+
+  getToken() {
+    return this.token;
+  }
+
+  getAuthStatusListner() {
+    return this.authStatusListener.asObservable();
+  }
 
   createUser(email: string, password: string) {
 
@@ -37,12 +48,11 @@ export class AuthService {
     .subscribe(response => {
       const token = response.token;
       this.token = token;
+      // send status of token as observable
+      this.authStatusListener.next(true);
     });
   }
 
 
-  getToken() {
-    return this.token;
-  }
 
 }
