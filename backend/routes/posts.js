@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 
 const Post = require('../models/post'); // Post model (mongoose/mongodb)
+const checkAuth = require('../middleware/check-auth');
 
 const router = express.Router();
 
@@ -32,7 +33,7 @@ const storage = multer.diskStorage({
 
 /* POST Request for posts
 ------------------------------------------------  */
-router.post("", multer({
+router.post("", checkAuth, multer({
   storage: storage
 }).single("image"), (req, res, next) => {
 
@@ -65,7 +66,7 @@ router.post("", multer({
 });
 
 // PUT
-router.put("/:id", multer({
+router.put("/:id", checkAuth, multer({
   storage: storage
 }).single("image"), (req, res, next) => {
 
@@ -150,7 +151,7 @@ router.get('/:id', (req, res, next) => {
 
 
 // DELETE
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', checkAuth, (req, res, next) => {
   Post.deleteOne({
       _id: req.params.id
     })
