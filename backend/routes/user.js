@@ -75,7 +75,9 @@ router.post('/login', (req, res, next) => {
       });
       res.status(200).json({
         message: 'Retrived user',
-        token: token
+        token: token,
+        // duration fortoken to expire
+        expiresIn: 3600
       })
     })
     .catch(err => {
