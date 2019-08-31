@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { Post } from '../post.model';
 import { PostService } from '../post.service';
 import { PageEvent } from '@angular/material';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-post-list',
@@ -13,7 +14,10 @@ export class PostListComponent implements OnInit, OnDestroy {
   //
   spinnerIsLoading = false;
   posts: Post[] = [];
+  userIsAuthenticated = false;
+
   private postsSubscription: Subscription;
+  private authStatusSubscription: Subscription;
 
   // for paginator
   totlePosts = 0;
@@ -21,7 +25,10 @@ export class PostListComponent implements OnInit, OnDestroy {
   currentPage = 1;
   pageSizeOptions = [1, 2, 5, 10];
 
-  constructor(public postService: PostService) {}
+  constructor(
+    public postService: PostService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.spinnerIsLoading = true; // show spinner
@@ -34,14 +41,22 @@ export class PostListComponent implements OnInit, OnDestroy {
         this.totlePosts = postData.postCount;
         this.posts = postData.posts;
       }); // three arguments next()|error()|completed()
+
+    // check in t=service for user autha fter login
+    this.userIsAuthenticated = this.authService.getIsAuthenticated();
+
+    this.authStatusSubscription = this.authService
+      .getAuthStatusListner()
+      .subscribe(isAuthenticated => {
+        this.userIsAuthenticated = isAuthenticated;
+      });
   }
 
   onDelete(postId: string) {
     this.spinnerIsLoading = true;
-    this.postService.deletePost(postId)
-      .subscribe(() => {
-        this.postService.getPosts(this.postsPerPage, this.currentPage);
-      });
+    this.postService.deletePost(postId).subscribe(() => {
+      this.postService.getPosts(this.postsPerPage, this.currentPage);
+    });
   }
 
   onChangePage(pageData: PageEvent) {
@@ -55,5 +70,6 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.postsSubscription.unsubscribe(); // to prevent memory leaks
+    this.authStatusSubscription.unsubscribe();
   }
 }
