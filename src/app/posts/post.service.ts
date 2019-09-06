@@ -18,6 +18,9 @@ export class PostService {
     private authService: AuthService
   ) {}
 
+
+  /* GET all POSTS
+  ----------------------------------------------  */
   getPosts(postsPerPage: number, currentPage: number) {
     // for query parameters
     const queryParams = `?pageSize=${postsPerPage}&page=${currentPage}`;
@@ -34,7 +37,8 @@ export class PostService {
                 id: post._id,
                 title: post.title,
                 content: post.content,
-                imagePath: post.imagePath
+                imagePath: post.imagePath,
+                creator: post.creator
               };
             }),
             maxPosts: postData.maxPosts
@@ -50,7 +54,8 @@ export class PostService {
       });
   }
 
-  // get single post
+  /* GET single POST
+  --------------------------------------------------  */
   getPost(id: string) {
     return this.http.get<{
       _id: string;
@@ -82,7 +87,8 @@ export class PostService {
       });
   }
 
-  // update posts
+  /* UPDATE post
+  ----------------------------------------------------  */
   updatePost(id: string, title: string, content: string, image: File | string) {
     let postData: Post | FormData;
 
@@ -110,6 +116,8 @@ export class PostService {
       });
   }
 
+  /* DELETE POST
+  ------------------------------------------------- */
   deletePost(postId: string) {
     return this.http.delete('http://localhost:3000/api/posts/' + postId);
   }

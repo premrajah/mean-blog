@@ -42,7 +42,8 @@ router.post("", checkAuth, multer({
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
-    imagePath: url + '/images/' + req.file.filename
+    imagePath: url + '/images/' + req.file.filename,
+    creator: req.userData.userId
   });
 
   // save to db
@@ -135,7 +136,8 @@ router.get('', (req, res, next) => {
 });
 
 
-// GET Single Post
+/* GET Single POST
+--------------------------------------------- */
 router.get('/:id', (req, res, next) => {
   Post.findById(req.params.id)
     .then(post => {
@@ -150,7 +152,8 @@ router.get('/:id', (req, res, next) => {
 });
 
 
-// DELETE
+/*  DELETE POST
+-------------------------------------------- */
 router.delete('/:id', checkAuth, (req, res, next) => {
   Post.deleteOne({
       _id: req.params.id

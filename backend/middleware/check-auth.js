@@ -8,10 +8,14 @@ module.exports = (req, res, next) => {
 
     // e.g. "Bearer asdjkgsjghgj";
     const token = req.headers.authorization.split(" ")[1];
-    console.log(token);
 
     // verify token
-    jwt.verify(token, 'secret_this_should_be_longer_than_this_but_i_guess_its_fine');
+    const decodedToken = jwt.verify(token, 'secret_this_should_be_longer_than_this_but_i_guess_its_fine');
+
+    req.userData = {
+      email: decodedToken.email,
+      userId: decodedToken.userId
+    };
 
     next();
 
