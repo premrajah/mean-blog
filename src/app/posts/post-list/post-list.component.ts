@@ -15,6 +15,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   spinnerIsLoading = false;
   posts: Post[] = [];
   userIsAuthenticated = false;
+  userId: string;
 
   private postsSubscription: Subscription;
   private authStatusSubscription: Subscription;
@@ -34,6 +35,8 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.spinnerIsLoading = true; // show spinner
 
     this.postService.getPosts(this.postsPerPage, this.currentPage);
+    this.userId = this.authService.getUserId();
+
     this.postsSubscription = this.postService
       .getPostUpdateListner()
       .subscribe((postData: { posts: Post[]; postCount: number }) => {
@@ -45,10 +48,12 @@ export class PostListComponent implements OnInit, OnDestroy {
     // check in t=service for user autha fter login
     this.userIsAuthenticated = this.authService.getIsAuthenticated();
 
+    // auth status change
     this.authStatusSubscription = this.authService
       .getAuthStatusListner()
       .subscribe(isAuthenticated => {
         this.userIsAuthenticated = isAuthenticated;
+        this.userId = this.authService.getUserId();
       });
   }
 

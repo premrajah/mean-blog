@@ -9,7 +9,8 @@ const router = express.Router();
 
 
 
-// register routes
+/* Signup Route
+---------------------------------------------------- */
 router.post("/signup", (req, res, next) => {
 
   //excrype password
@@ -40,7 +41,8 @@ router.post("/signup", (req, res, next) => {
 
 });
 
-
+/* Login Route
+-------------------------------------------------------- */
 router.post('/login', (req, res, next) => {
   let fetchedUser;
   // check the email in the db against the request
@@ -76,8 +78,9 @@ router.post('/login', (req, res, next) => {
       res.status(200).json({
         message: 'Retrived user',
         token: token,
-        // duration fortoken to expire
-        expiresIn: 3600
+        // duration for token to expire
+        expiresIn: 3600,
+        userId: fetchedUser_id
       })
     })
     .catch(err => {
