@@ -52,7 +52,7 @@ router.post('/login', (req, res, next) => {
     .then(user => {
       if (!user) {
         return res.status(401).json({
-          message: 'Auth falied'
+          message: 'User: Auth falied.'
         });
       }
 
@@ -62,30 +62,34 @@ router.post('/login', (req, res, next) => {
       return bcrypt.compare(req.body.password, fetchedUser.password);
     })
     .then(result => {
+
       if (!result) {
         return res.status(401).json({
-          message: 'Auth failed'
+          message: 'Result: Auth failed'
         });
       }
 
       // valid password
       const token = jwt.sign({
-        email: fetchedUser.email,
-        userId: fetchedUser._id
-      }, 'secret_this_should_be_longer_than_this_but_i_guess_its_fine', {
-        expiresIn: '1h',
-      });
+          email: fetchedUser.email,
+          userId: fetchedUser._id
+        },
+        'secret_this_should_be_longer_than_this_but_i_guess_its_fine', {
+          expiresIn: '1h'
+        }
+      );
       res.status(200).json({
-        message: 'Retrived user',
         token: token,
-        // duration for token to expire
+        // token expiry time
         expiresIn: 3600,
-        userId: fetchedUser_id
-      })
+        userId: fetchedUser._id
+      });
+
     })
     .catch(err => {
+      console.log("hi");
       return res.status(401).json({
-        message: 'Auth failed',
+        message: 'Error: Auth failed',
         error: err
       });
     });

@@ -48,7 +48,8 @@ export class PostCreateComponent implements OnInit {
             id: postData._id,
             title: postData.title,
             content: postData.content,
-            imagePath: postData.imagePath
+            imagePath: postData.imagePath,
+            creator: postData.creator
           };
 
           this.form.setValue({
@@ -101,8 +102,5 @@ export class PostCreateComponent implements OnInit {
       this.imagePreview = (reader.result as string);
     };
     reader.readAsDataURL(file);
-
-    console.log(file);
-    console.log(this.form);
   }
 }

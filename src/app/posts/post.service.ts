@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { Post } from './post.model';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { stringify } from '@angular/compiler/src/util';
 
 @Injectable({ providedIn: 'root' }) // important: 'root' to add and only creates once instance
 export class PostService {
@@ -15,7 +16,6 @@ export class PostService {
   constructor(
     private http: HttpClient,
     public router: Router,
-    private authService: AuthService
   ) {}
 
 
@@ -57,11 +57,13 @@ export class PostService {
   /* GET single POST
   --------------------------------------------------  */
   getPost(id: string) {
+    // response from database _id (mongo)
     return this.http.get<{
       _id: string;
       title: string;
       content: string;
       imagePath: string;
+      creator: string;
     }>('http://localhost:3000/api/posts/' + id);
   }
 
@@ -102,10 +104,11 @@ export class PostService {
     } else {
       // string
       postData = {
-        id: id,
-        title: title,
-        content: content,
-        imagePath: image
+        id,
+        title,
+        content,
+        imagePath: image,
+        creator: null
       };
     }
 
