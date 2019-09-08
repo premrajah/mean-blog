@@ -27,3 +27,9 @@ mat-spinner {
 mat-paginator {
   margin-top: 1rem;
 }
+
+.dot {
+  width: 4px;
+  height: 1rem;
+  background-color: rgba(0, 200, 0, 0.5);
+}
